@@ -43,7 +43,7 @@
         <div class="container">
             <div class="row">
                 <div class="span12">
-                    <div id="dashboard" ng-app="dashboard" ng-controller="TestAnalysisCtrl" ng-init="init()">
+                    <div id="dashboard" ng-app="dashboard" ng-controller="MarketplaceCtrl" ng-init="init()">
                         <h2>{{test_data}}</h2>
                         <div style="" id="filter_tag">
                             Filters
@@ -58,8 +58,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="test-result" ng-repeat="(name, test_data) in parse_data">
-                            <h3>{{name}}</h3>
+                        <div class="test-result" ng-repeat="testResult in testResults">
+                            <h3>{{testResult.test_name}}, {{testResult.passed}}</h3>
                             <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr>

@@ -57,6 +57,17 @@ var TestAnalysisCtrl = function($scope, $http, $q, $rootScope, $filter) {
 };
 TestAnalysisCtrl.$inject = ['$scope', '$http', '$q', '$rootScope'];
 
+var MarketplaceCtrl = function($scope, $http) {
+  console.log('inside MarketplaceCtrl!');
+
+  $scope.init = function() {
+    $http.get('final.json').success(function(data) {
+      $scope.testResults = data;
+      console.log($scope.testResults);
+    });
+  }
+};
+
 var linkify = function() {
     var rules = [
         {
