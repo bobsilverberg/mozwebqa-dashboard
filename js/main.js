@@ -66,6 +66,8 @@ var MarketplaceCtrl = function($scope, $http) {
       setTimeout(Hyphenator.run, 200);
       console.log($scope.testResults);
     });
+
+//    $("a[rel~=tooltip], .has-tooltip").tooltip();
   }
 };
 
