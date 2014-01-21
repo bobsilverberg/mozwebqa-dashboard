@@ -63,6 +63,7 @@ var MarketplaceCtrl = function($scope, $http) {
   $scope.init = function() {
     $http.get('final.json').success(function(data) {
       $scope.testResults = data;
+      setTimeout(Hyphenator.run, 200);
       console.log($scope.testResults);
     });
   }
