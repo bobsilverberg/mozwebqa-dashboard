@@ -1,0 +1,828 @@
+[
+  {
+    "repo": "Addon-Tests",
+    "issues": [
+      {
+        "body": "This is for issue https://github.com/mozilla/Addon-Tests/issues/685",
+        "title": "Adding a wait after clicking on delete review",
+        "labels": [],
+        "number": 686,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/Addon-Tests/pull/686",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/Addon-Tests/pull/686"
+      },
+      {
+        "body": "This test is intermittently failing on amo.dev and needs to be investigated:\r\nhttp://qa-selenium.mv.mozilla.com:8080/view/AMO/job/amo.dev/990/testReport/junit/tests.desktop.test_reviews/TestReviews/test_that_new_review_is_saved/\r\n\r\nStacktrace\r\n\r\nself = <tests.desktop.test_reviews.TestReviews instance at 0x10b87f878>\r\nmozwebqa = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x10b87ff38>\r\n\r\n    @pytest.mark.native\r\n    @pytest.mark.login\r\n    def test_that_new_review_is_saved(self, mozwebqa):\r\n        # Step 1 - Login into AMO\r\n        home_page = Home(mozwebqa)\r\n        home_page.login()\r\n        Assert.true(home_page.is_the_current_page)\r\n        Assert.true(home_page.header.is_user_logged_in)\r\n    \r\n        # Step 2 - Load any addon detail page\r\n        details_page = Details(mozwebqa, 'Memchaser')\r\n    \r\n        # Step 3 - Click on \"Write review\" button\r\n        write_review_block = details_page.click_to_write_review()\r\n    \r\n        # Step 4 - Write a review\r\n        body = 'Automatic addon review by Selenium tests %s' % datetime.now()\r\n        write_review_block.enter_review_with_text(body)\r\n        write_review_block.set_review_rating(1)\r\n        review_page = write_review_block.click_to_save_review()\r\n    \r\n        # Step 5 - Assert review\r\n        review = review_page.reviews[0]\r\n        Assert.equal(review.rating, 1)\r\n        Assert.equal(review.author, mozwebqa.credentials['default']['name'])\r\n        date = datetime.now().strftime(\"%B %d, %Y\")\r\n        # there are no leading zero-signs on day so we need to remove them too\r\n        date = date.replace(' 0', ' ')\r\n        Assert.equal(review.date, date)\r\n        Assert.equal(review.text, body)\r\n    \r\n        review.delete()\r\n    \r\n        details_page = Details(mozwebqa, 'Memchaser')\r\n        review_page = details_page.click_all_reviews_link()\r\n    \r\n        for review in review_page.reviews:\r\n>           Assert.false(body in review.text)\r\n\r\ntests/desktop/test_reviews.py:88: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <class unittestzero.Assert at 0x10b5c1530>, first = True, msg = None\r\n\r\n    @classmethod\r\n    def false(self, first, msg=None):\r\n        \"\"\"\r\n            Asserts that what is given is equal to False\r\n    \r\n            :Args:\r\n             - First object to be tested\r\n             - Message that will be printed if it fails\r\n            \"\"\"\r\n    \r\n>       assert bool(first) is False, msg\r\nE       assert True is False\r\nE        +  where True = bool(True)\r\n\r\n.env/lib/python2.7/site-packages/unittestzero.py:89: AssertionError",
+        "title": "Investigate test_that_new_review_is_saved on amo.dev",
+        "labels": [],
+        "number": 685,
+        "comments": 5,
+        "html_url": "https://github.com/mozilla/Addon-Tests/issues/685",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "<code>test_searching_for_addon_type_returns_results_of_correct_type</code> currently has some coverage disabled\r\nhere:\r\nhttps://github.com/mozilla/Addon-Tests/blob/master/tests/desktop/test_search.py#L260\r\n\r\nI don't really know when this was disabled, but it really needs to be modified to add the extra coverage",
+        "title": "Re-enable coverage for 'More' header menu",
+        "labels": [],
+        "number": 682,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/Addon-Tests/issues/682",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "test_breadcrumb_menu_in_theme_details_page fails, sometimes:\r\n\r\n<code>self = <tests.desktop.test_themes.TestThemes instance at 0x1032a7440>\r\nmozwebqa = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x1033d7518>\r\n\r\n@pytest.mark.native\r\n@pytest.mark.nondestructive\r\ndef test_breadcrumb_menu_in_theme_details_page(self, mozwebqa):\r\n\"\"\"\r\nTest for Litmus Litmus 12046.\r\nhttps://litmus.mozilla.org/show_test.cgi?id=12046\r\n\"\"\"\r\n\r\n# Step 1, 2: Access AMO Home, Click on theme category link.\r\nhome_page = Home(mozwebqa)\r\nthemes_page = home_page.header.site_navigation_menu(\"Themes\").click()\r\nAssert.true(themes_page.is_the_current_page)\r\n\r\n# Step 3: Click on any theme.\r\nrandom_theme_index = random.randint(0, themes_page.theme_count - 1)\r\n\r\n> themes_detail_page = themes_page.click_theme(random_theme_index)\r\n\r\ntests/desktop/test_themes.py:118:\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nself = <pages.desktop.themes.Themes object at 0x1035051d0>, index = 16\r\n\r\ndef click_theme(self, index):\r\n\"\"\"Clicks on the theme with the given index in the page.\"\"\"\r\n> self.selenium.find_elements(*self._themes_locator)[index].click()\r\n\r\npages/desktop/themes.py:38:\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nself = <selenium.webdriver.remote.webelement.WebElement object at 0x103508790>\r\n\r\ndef click(self):\r\n\"\"\"Clicks the element.\"\"\"\r\n> self._execute(Command.CLICK_ELEMENT)\r\n\r\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/webelement.py:54:\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nself = <selenium.webdriver.remote.webelement.WebElement object at 0x103508790>\r\ncommand = 'clickElement'\r\nparams = {'id': u'24', 'sessionId': u'7776c8d2-7ae0-442f-a1ca-1f0169b714ff'}\r\n\r\ndef _execute(self, command, params=None):\r\n\"\"\"Executes a command against the underlying HTML element.\r\n\r\nArgs:\r\ncommand: The name of the command to _execute as a string.\r\nparams: A dictionary of named parameters to send with the command.\r\n\r\nReturns:\r\nThe command's JSON response loaded into a dictionary object.\r\n\"\"\"\r\nif not params:\r\nparams = {}\r\nparams['id'] = self._id\r\n> return self._parent.execute(command, params)\r\n\r\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/webelement.py:228:\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nself = <selenium.webdriver.remote.webdriver.WebDriver object at 0x103304990>\r\ndriver_command = 'clickElement'\r\nparams = {'id': u'24', 'sessionId': u'7776c8d2-7ae0-442f-a1ca-1f0169b714ff'}\r\n\r\ndef execute(self, driver_command, params=None):\r\n\"\"\"\r\nSends a command to be executed by a command.CommandExecutor.\r\n\r\n:Args:\r\n- driver_command: The name of the command to execute as a string.\r\n- params: A dictionary of named parameters to send with the command.\r\n\r\n:Returns:\r\nThe command's JSON response loaded into a dictionary object.\r\n\"\"\"\r\nif not params:\r\nparams = {'sessionId': self.session_id}\r\nelif 'sessionId' not in params:\r\nparams['sessionId'] = self.session_id\r\n\r\nparams = self._wrap_value(params)\r\nresponse = self.command_executor.execute(driver_command, params)\r\nif response:\r\n> self.error_handler.check_response(response)\r\n\r\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/webdriver.py:165:\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nself = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x103304f50>\r\nresponse = {u'class': u'org.openqa.selenium.remote.Response', u'hCode': 2847932, u'sessionId': u'7776c8d2-7ae0-442f-a1ca-1f0169b714ff', u'state': u'element not visible', ...}\r\n\r\ndef check_response(self, response):\r\n\"\"\"\r\nChecks that a JSON response from the WebDriver does not have an error.\r\n\r\n:Args:\r\n- response - The JSON response from the WebDriver server as a dictionary\r\nobject.\r\n\r\n:Raises: If the response contains an error message.\r\n\"\"\"\r\nstatus = response['status']\r\nif status == ErrorCode.SUCCESS:\r\nreturn\r\nexception_class = ErrorInResponseException\r\nif status == ErrorCode.NO_SUCH_ELEMENT:\r\nexception_class = NoSuchElementException\r\nelif status == ErrorCode.NO_SUCH_FRAME:\r\nexception_class = NoSuchFrameException\r\nelif status == ErrorCode.NO_SUCH_WINDOW:\r\nexception_class = NoSuchWindowException\r\nelif status == ErrorCode.STALE_ELEMENT_REFERENCE:\r\nexception_class = StaleElementReferenceException\r\nelif status == ErrorCode.ELEMENT_NOT_VISIBLE:\r\nexception_class = ElementNotVisibleException\r\nelif status == ErrorCode.INVALID_ELEMENT_STATE:\r\nexception_class = InvalidElementStateException\r\nelif status == ErrorCode.INVALID_SELECTOR \\\r\nor status == ErrorCode.INVALID_XPATH_SELECTOR \\\r\nor status == ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:\r\nexception_class = InvalidSelectorException\r\nelif status == ErrorCode.ELEMENT_IS_NOT_SELECTABLE:\r\nexception_class = ElementNotSelectableException\r\nelif status == ErrorCode.INVALID_COOKIE_DOMAIN:\r\nexception_class = WebDriverException\r\nelif status == ErrorCode.UNABLE_TO_SET_COOKIE:\r\nexception_class = WebDriverException\r\nelif status == ErrorCode.TIMEOUT:\r\nexception_class = TimeoutException\r\nelif status == ErrorCode.SCRIPT_TIMEOUT:\r\nexception_class = TimeoutException\r\nelif status == ErrorCode.UNKNOWN_ERROR:\r\nexception_class = WebDriverException\r\nelif status == ErrorCode.UNEXPECTED_ALERT_OPEN:\r\nexception_class = UnexpectedAlertPresentException\r\nelif status == ErrorCode.NO_ALERT_OPEN:\r\nexception_class = NoAlertPresentException\r\nelif status == ErrorCode.IME_NOT_AVAILABLE:\r\nexception_class = ImeNotAvailableException\r\nelif status == ErrorCode.IME_ENGINE_ACTIVATION_FAILED:\r\nexception_class = ImeActivationFailedException\r\nelif status == ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:\r\nexception_class = MoveTargetOutOfBoundsException\r\nelse:\r\nexception_class = WebDriverException\r\nvalue = response['value']\r\nif isinstance(value, basestring):\r\nif exception_class == ErrorInResponseException:\r\nraise exception_class(response, value)\r\nraise exception_class(value)\r\nmessage = ''\r\nif 'message' in value:\r\nmessage = value['message']\r\n\r\nscreen = None\r\nif 'screen' in value:\r\nscreen = value['screen']\r\n\r\nstacktrace = None\r\nif 'stackTrace' in value and value['stackTrace']:\r\nstacktrace = []\r\ntry:\r\nfor frame in value['stackTrace']:\r\nline = self._value_or_default(frame, 'lineNumber', '')\r\nfile = self._value_or_default(frame, 'fileName', '<anonymous>')\r\nif line:\r\nfile = \"%s:%s\" % (file, line)\r\nmeth = self._value_or_default(frame, 'methodName', '<anonymous>')\r\nif 'className' in frame:\r\nmeth = \"%s.%s\" % (frame['className'], meth)\r\nmsg = \" at %s (%s)\"\r\nmsg = msg % (meth, file)\r\nstacktrace.append(msg)\r\nexcept TypeError:\r\npass\r\nif exception_class == ErrorInResponseException:\r\nraise exception_class(response, message)\r\n> raise exception_class(message, screen, stacktrace)\r\nE ElementNotVisibleException: Message: u\"Element is not currently visible and so may not be interacted with\\nCommand duration or timeout: 10.12 seconds\\nBuild info: version: '2.35.0', revision: 'c916b9d', time: '2013-08-12 15:42:01'\\nSystem info: os.name: 'Windows 7', os.arch: 'x86', os.version: '6.1', java.version: '1.6.0_29'\\nSession ID: 12d7f00e-bf7d-48aa-ba35-360719e57200\\nDriver info: org.openqa.selenium.firefox.FirefoxDriver\\nCapabilities [{platform=XP, acceptSslCerts=true, javascriptEnabled=true, browserName=firefox, rotatable=false, locationContextEnabled=true, version=23.0, cssSelectorsEnabled=true, databaseEnabled=true, handlesAlerts=true, browserConnectionEnabled=true, nativeEvents=true, webStorageEnabled=true, applicationCacheEnabled=true, takesScreenshot=true}]\" ; Screenshot: available via screen ; Stacktrace:\r\nE at sun.reflect.NativeConstructorAccessorImpl.newInstance0 (NativeConstructorAccessorImpl.java:-2)\r\nE at sun.reflect.NativeConstructorAccessorImpl.newInstance (NativeConstructorAccessorImpl.java:39)\r\nE at sun.reflect.DelegatingConstructorAccessorImpl.newInstance (DelegatingConstructorAccessorImpl.java:27)\r\nE at java.lang.reflect.Constructor.newInstance (Constructor.java:513)\r\nE at org.openqa.selenium.remote.ErrorHandler.createThrowable (ErrorHandler.java:191)\r\nE at org.openqa.selenium.remote.ErrorHandler.throwIfResponseFailed (ErrorHandler.java:145)\r\nE at org.openqa.selenium.remote.RemoteWebDriver.execute (RemoteWebDriver.java:554)\r\nE at org.openqa.selenium.remote.RemoteWebElement.execute (RemoteWebElement.java:268)\r\nE at org.openqa.selenium.remote.RemoteWebElement.click (RemoteWebElement.java:79)\r\nE at sun.reflect.GeneratedMethodAccessor33.invoke (None:-1)\r\nE at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:25)\r\nE at java.lang.reflect.Method.invoke (Method.java:597)\r\nE at org.openqa.selenium.support.events.EventFiringWebDriver$EventFiringWebElement$1.invoke (EventFiringWebDriver.java:327)\r\nE at $Proxy2.click (None:-1)\r\nE at org.openqa.selenium.support.events.EventFiringWebDriver$EventFiringWebElement.click (EventFiringWebDriver.java:340)\r\nE at sun.reflect.GeneratedMethodAccessor33.invoke (None:-1)\r\nE at sun.reflect.DelegatingMethodAccessorImpl.invoke (DelegatingMethodAccessorImpl.java:25)\r\nE at java.lang.reflect.Method.invoke (Method.java:597)\r\nE at org.openqa.selenium.remote.server.KnownElements$1.invoke (KnownElements.java:63)\r\nE at $Proxy3.click (None:-1)\r\nE at org.openqa.selenium.remote.server.handler.ClickElement.call (ClickElement.java:29)\r\nE at org.openqa.selenium.remote.server.handler.ClickElement.call (ClickElement.java:1)\r\nE at java.util.concurrent.FutureTask$Sync.innerRun (FutureTask.java:303)\r\nE at java.util.concurrent.FutureTask.run (FutureTask.java:138)\r\nE at org.openqa.selenium.remote.server.DefaultSession$1.run (DefaultSession.java:169)\r\nE at java.util.concurrent.ThreadPoolExecutor$Worker.runTask (ThreadPoolExecutor.java:886)\r\nE at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:908)\r\nE at java.lang.Thread.run (Thread.java:662)\r\n\r\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/errorhandler.py:164: ElementNotVisibleException</code>",
+        "title": "Sporadic failure in test_breadcrumb_menu_in_theme_details_page on dev",
+        "labels": [
+          {
+            "color": "e10c02",
+            "name": "Test Failure"
+          }
+        ],
+        "number": 641,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/Addon-Tests/issues/641",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "https://github.com/mozilla/Addon-Tests/blob/master/tests/desktop/test_details_page.py#L388 has been failing consistently on saucelabs since Dec. 6th. I have investigated and I am stumped. It passes everywhere else, including locally. I even added an explicit wait into the test to ensure that the element is found, and the test breezes through that wait (i.e., the element _is_ found), but WebDriver is reporting it as not visible. I can see that it is visible both in the video and the screenshot.\r\n\r\nThe version of the job which contains the wait can be seen here: https://saucelabs.com/tests/764d5d5d8c4e472680eacbb721ddbea4, whereas the one without the wait is at: https://saucelabs.com/jobs/4fe6c400ac224ce384b15e8e0c5ac243.\r\n\r\nIn both of those we can see that Element 4 (using: css selector, value: #beta-channel p.install-button a.button.caution) is found, but \"displayed\" is reporting \"false\". \r\n\r\nI thought it might be a Selenium version issue, as Saucelabs seems to be still on 2.26, but I downgraded my local Selenium and still was unable to recreate the problem locally.\r\n\r\nIf anyone has any ideas on why this is only failing on Saucelabs I'd love to hear them!",
+        "title": "Intermittent failure on amo.dev.mac.saucelabs - element not displayed",
+        "labels": [],
+        "number": 581,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/Addon-Tests/issues/581",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Most recent failure: http://qa-selenium.mv.mozilla.com:8080/job/amo.dev.mac/1224/\n\nThis seems to be an ongoing intermittent issue. The problem is that the call to selenium.get at https://github.com/mozilla/Addon-Tests/blob/master/pages/desktop/details.py#L102 is throwing an exception. I discussed this with @davehunt and the 404 that we see thrown in the stack trace isn't a 404 on the addons page, but rather a 404 from the Selenium server.\n\nI will continue to discuss this with @davehunt, but if anyone has any feedback to share please add it to this issue.\n\n \nStack Trace:\n\nself = <tests.desktop.test_details_page.TestDetails instance at 0x104da1e60>\nmozwebqa = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x104da3830>\n\n    @pytest.mark.nondestructive\n    def test_that_version_information_is_displayed(self, mozwebqa):\n        \"\"\"Test for Litmus 9890.\"\"\"\n>       details_page = Details(mozwebqa, 'Firebug')\n\ntests/desktop/test_details_page.py:64: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <pages.desktop.details.Details object at 0x104d9d910>\ntestsetup = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x104da3830>\naddon_name = 'Firebug'\n\n    def __init__(self, testsetup, addon_name=None):\n        #formats name for url\n        Base.__init__(self, testsetup)\n        if (addon_name != None):\n            self.addon_name = addon_name.replace(\" \", \"-\")\n            self.addon_name = re.sub(r'[^A-Za-z0-9\\-]', '', self.addon_name).lower()\n            self.addon_name = self.addon_name[:27]\n>           self.selenium.get(\"%s/addon/%s\" % (self.base_url, self.addon_name))\n\npages/desktop/details.py:102: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <selenium.webdriver.remote.webdriver.WebDriver object at 0x104d9d7d0>\nurl = 'https://addons-dev.allizom.org/addon/firebug'\n\n    def get(self, url):\n        \"\"\"\n            Loads a web page in the current browser session.\n            \"\"\"\n>       self.execute(Command.GET, {'url': url})\n\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/webdriver.py:169: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <selenium.webdriver.remote.webdriver.WebDriver object at 0x104d9d7d0>\ndriver_command = 'get'\nparams = {'sessionId': u'1353385547764', 'url': 'https://addons-dev.allizom.org/addon/firebug'}\n\n    def execute(self, driver_command, params=None):\n        \"\"\"\n            Sends a command to be executed by a command.CommandExecutor.\n    \n            :Args:\n             - driver_command: The name of the command to execute as a string.\n             - params: A dictionary of named parameters to send with the command.\n    \n            :Returns:\n              The command's JSON response loaded into a dictionary object.\n            \"\"\"\n        if not params:\n            params = {'sessionId': self.session_id}\n        elif 'sessionId' not in params:\n            params['sessionId'] = self.session_id\n    \n        params = self._wrap_value(params)\n        response = self.command_executor.execute(driver_command, params)\n        if response:\n>           self.error_handler.check_response(response)\n\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/webdriver.py:157: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x104d9d490>\nresponse = {'status': 404, 'value': ''}\n\n    def check_response(self, response):\n        \"\"\"\n            Checks that a JSON response from the WebDriver does not have an error.\n    \n            :Args:\n             - response - The JSON response from the WebDriver server as a dictionary\n               object.\n    \n            :Raises: If the response contains an error message.\n            \"\"\"\n        status = response['status']\n        if status == ErrorCode.SUCCESS:\n            return\n        exception_class = ErrorInResponseException\n        if status == ErrorCode.NO_SUCH_ELEMENT:\n            exception_class = NoSuchElementException\n        elif status == ErrorCode.NO_SUCH_FRAME:\n            exception_class = NoSuchFrameException\n        elif status == ErrorCode.NO_SUCH_WINDOW:\n            exception_class = NoSuchWindowException\n        elif status == ErrorCode.STALE_ELEMENT_REFERENCE:\n            exception_class = StaleElementReferenceException\n        elif status == ErrorCode.ELEMENT_NOT_VISIBLE:\n            exception_class = ElementNotVisibleException\n        elif status == ErrorCode.INVALID_ELEMENT_STATE:\n            exception_class = InvalidElementStateException\n        elif status == ErrorCode.INVALID_SELECTOR \\\n                or status == ErrorCode.INVALID_XPATH_SELECTOR \\\n                or status == ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:\n            exception_class = InvalidSelectorException\n        elif status == ErrorCode.ELEMENT_IS_NOT_SELECTABLE:\n            exception_class = ElementNotSelectableException\n        elif status == ErrorCode.INVALID_COOKIE_DOMAIN:\n            exception_class = WebDriverException\n        elif status == ErrorCode.UNABLE_TO_SET_COOKIE:\n            exception_class = WebDriverException\n        elif status == ErrorCode.TIMEOUT:\n            exception_class = TimeoutException\n        elif status == ErrorCode.SCRIPT_TIMEOUT:\n            exception_class = TimeoutException\n        elif status == ErrorCode.UNKNOWN_ERROR:\n            exception_class = WebDriverException\n        elif status == ErrorCode.NO_ALERT_OPEN:\n            exception_class = NoAlertPresentException\n        elif status == ErrorCode.IME_NOT_AVAILABLE:\n            exception_class = ImeNotAvailableException\n        elif status == ErrorCode.IME_ENGINE_ACTIVATION_FAILED:\n            exception_class = ImeActivationFailedException\n        elif status == ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS:\n            exception_class = MoveTargetOutOfBoundsException\n        else:\n            exception_class = WebDriverException\n        value = response['value']\n        if type(value) is str:\n            if exception_class == ErrorInResponseException:\n                raise exception_class(response, value)\n>           raise exception_class(value)\nE           WebDriverException: Message: ''\n\n.env/lib/python2.7/site-packages/selenium/webdriver/remote/errorhandler.py:127: WebDriverException\n",
+        "title": "Intermittent failure on amo.dev - 404 from Selenium server",
+        "labels": [
+          {
+            "color": "e10c02",
+            "name": "Test Failure"
+          }
+        ],
+        "number": 572,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/Addon-Tests/issues/572",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "Affiliates-Tests",
+    "issues": []
+  },
+  {
+    "repo": "bouncer-tests",
+    "issues": [
+      {
+        "body": "For now, let's please xfail the two tests in https://pastebin.mozilla.org/3442995, as they're not reflected in staging.",
+        "title": "For now, please xfail the two failing tests in staging, from https://pastebin.mozilla.org/3442995",
+        "labels": [],
+        "number": 46,
+        "comments": 4,
+        "html_url": "https://github.com/mozilla/bouncer-tests/issues/46",
+        "assignee": "Sergey Tupchiy",
+        "pull_request": ""
+      },
+      {
+        "body": "We should remove the xfail for https://bugzilla.mozilla.org/show_bug.cgi?id=813968, given that it's now working.",
+        "title": "Remove the xfail for bug 813968.",
+        "labels": [],
+        "number": 36,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/bouncer-tests/issues/36",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "See below; we don't return the failed parameters when we fail...\r\n\r\n_____________ TestRedirects.test_redirect_for_windows_200_to_2001 ______________\r\n[gw1] darwin -- Python 2.7.1 /Users/Shared/Jenkins/Home/jobs/bouncer.stage/workspace/.env/bin/python\r\nself = <tests.test_redirects.TestRedirects instance at 0x10437f5f0>\r\ntestsetup = <conftest.TestSetup object at 0x10434acd0>\r\n\r\n    def test_redirect_for_windows_200_to_2001(self, testsetup):\r\n    \r\n        url = testsetup.base_url\r\n        param = {\r\n            'product' : 'firefox-20.0',\r\n            'os': 'win',\r\n            'lang' : 'en-US',\r\n        }\r\n    \r\n        response = self._head_request(url, params=param)\r\n    \r\n        parsed_url = urlparse(response.url)\r\n    \r\n>       Assert.true('20.0.1' in parsed_url.query, 'Redirect failed using params of %s' % (parsed_url.query))\r\n\r\ntests/test_redirects.py:143: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <class unittestzero.Assert at 0x1040f6188>, first = False\r\nmsg = 'Redirect failed using params of '\r\n\r\n    @classmethod\r\n    def true(self, first, msg=None):\r\n        \"\"\"\r\n            Asserts that what is given is equal to True\r\n    \r\n            :Args:\r\n             - First object to be tested\r\n             - Message that will be printed if it fails\r\n            \"\"\"\r\n    \r\n>       assert bool(first) is True, msg\r\nE       AssertionError: Redirect failed using params of\r\n",
+        "title": "Actually return the params in failure for test_redirect_for_windows_200_to_2001",
+        "labels": [],
+        "number": 31,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/bouncer-tests/issues/31",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "We should un-xfail the stub-installer test (can use a release build from this dir: ftp://ftp.mozilla.org/pub/firefox/releases/stub/), so we can a little more coverage, again.\n\nhttps://github.com/mozilla/bouncer-tests/blob/master/tests/test_redirects.py#L65",
+        "title": "Un-xfail stub-installer test and add a stub-installer build to it",
+        "labels": [],
+        "number": 21,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/bouncer-tests/issues/21",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Create a beautifully written readme.",
+        "title": "Create a readme",
+        "labels": [],
+        "number": 12,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/bouncer-tests/issues/12",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "https://github.com/bebef1987/bouncer-tests/commit/43f7444b8b504f21321450389430564b7df3fd75#L0R39 has firefox16.0b6.exe hardcoded. We need to add the product as commandline args so we don't update code each time the product changes",
+        "title": "Do not hardcode product in test",
+        "labels": [],
+        "number": 7,
+        "comments": 6,
+        "html_url": "https://github.com/mozilla/bouncer-tests/issues/7",
+        "assignee": "Florin Strugariu",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "marketing-project-template",
+    "issues": [
+      {
+        "body": "This came up during our Firefox Flicks post-mortem: zh-TW should *never* fall-back to zh-CN.\r\n\r\nIt should always:\r\n\r\n* either stay at zh-TW\r\n* fall-back to en-US",
+        "title": "zh-TW should *never* fall-back to zh-CN",
+        "labels": [],
+        "number": 5,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/marketing-project-template/issues/5",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "marketplace-tests",
+    "issues": [
+      {
+        "body": "http://qa-selenium.mv.mozilla.com:8080/view/Marketplace/job/marketplace.dev.saucelabs/887/testReport/\r\n\r\n\r\nStacktrace\r\n\r\nself = <tests.desktop.consumer_pages.test_reviews.TestReviews instance at 0x1072f4200>\r\nmozwebqa = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x10732aea8>\r\n\r\n    def test_that_checks_the_addition_of_a_review(self, mozwebqa):\r\n>       self._reviews_setup(mozwebqa)\r\n\r\ntests/desktop/consumer_pages/test_reviews.py:34: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <tests.desktop.consumer_pages.test_reviews.TestReviews instance at 0x1072f4200>\r\nmozwebqa = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x10732aea8>\r\n\r\n    def _reviews_setup(self, mozwebqa):\r\n        # init API client\r\n        self.mk_api = MarketplaceAPI.get_client(mozwebqa.base_url,\r\n                                                mozwebqa.credentials)\r\n    \r\n        # Submit a review using marketplace API\r\n        mock_review = MockReview()\r\n        home_page = Home(mozwebqa)\r\n        self.app_name, self.review_id = self.mk_api.submit_app_review_for_either(\r\n            home_page.app_under_test,\r\n            mock_review.body,\r\n>           mock_review.rating)\r\n\r\ntests/desktop/consumer_pages/test_reviews.py:31: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <mocks.marketplace_api.MarketplaceAPI instance at 0x10732a5f0>\r\napps = ['Wikipedia', 'Calculator']\r\nreview = 'automatic app review by Selenium tests 1390918664', rating = 3\r\n\r\n    def submit_app_review_for_either(self, apps, review, rating):\r\n        from requests.exceptions import HTTPError\r\n        from datetime import datetime\r\n    \r\n        # Get app details\r\n        apps_details = {}\r\n        for app in apps:\r\n            apps_details.update({\r\n                app: self.get_app(app),\r\n            })\r\n    \r\n        # try submitting review for one app\r\n        for app_name, app in apps_details.iteritems():\r\n            # Submit a review using marketplace API\r\n            try:\r\n                review_id = self.submit_app_review(app['id'], review,\r\n                                                   rating)\r\n                selected_app = app_name\r\n            except HTTPError, e:\r\n                continue\r\n            break\r\n    \r\n        # if none of the apps have a review, then use the review that got\r\n        # submitted eariler\r\n        if locals().get('review_id', None) is None:\r\n            reviews = []\r\n    \r\n            # find app that has a review and return that\r\n            for app_name, app in apps_details.iteritems():\r\n>               reviews.append(self.get_app_review(app['id']))\r\n\r\nmocks/marketplace_api.py:187: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <mocks.marketplace_api.MarketplaceAPI instance at 0x10732a5f0>\r\napp_id = 364927, app_slug = None, user = 'mine'\r\n\r\n    def get_app_review(self, app_id=None, app_slug=None, user='mine'):\r\n        if app_id is None and app_slug is None:\r\n            raise ValueError('Provide either app_id or app_slug.')\r\n    \r\n        from urlparse import urlunparse\r\n        client = self._client\r\n        endpoint = '/apps/rating/?app=%s&user=%s' % (app_slug if app_slug is not None else app_id, user)\r\n        _url = urlunparse((client.protocol, '%s:%s' % (client.domain,\r\n                                                       client.port),\r\n                           '%s/api/v1%s' % (client.prefix, endpoint),\r\n                           '', '', ''))\r\n    \r\n>       resp = self._client.conn.fetch('GET', _url)\r\n\r\nmocks/marketplace_api.py:155: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <marketplace.connection.Connection instance at 0x10732a998>\r\nmethod = 'GET'\r\nurl = 'https://marketplace-dev.allizom.org:443/api/v1/apps/rating/?app=364927&user=mine'\r\ndata = None, expected_status_code = None\r\n\r\n    def fetch(self, method, url, data=None, expected_status_code=None):\r\n        \"\"\"Prepare the headers, encode data, call API and provide\r\n            data it returns\r\n            \"\"\"\r\n        kwargs = self.prepare_request(method, url, data)\r\n        response = getattr(requests, method.lower())(url, **kwargs)\r\n        log.debug(str(response.__dict__))\r\n        if response.status_code >= 400:\r\n>           response.raise_for_status()\r\n\r\n.env/lib/python2.7/site-packages/marketplace/connection.py:83: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <Response [403]>\r\n\r\n    def raise_for_status(self):\r\n        \"\"\"Raises stored :class:`HTTPError`, if one occurred.\"\"\"\r\n    \r\n        http_error_msg = ''\r\n    \r\n        if 400 <= self.status_code < 500:\r\n            http_error_msg = '%s Client Error: %s' % (self.status_code, self.reason)\r\n    \r\n        elif 500 <= self.status_code < 600:\r\n            http_error_msg = '%s Server Error: %s' % (self.status_code, self.reason)\r\n    \r\n        if http_error_msg:\r\n>           raise HTTPError(http_error_msg, response=self)\r\nE           HTTPError: 403 Client Error: FORBIDDEN\r\n\r\n.env/lib/python2.7/site-packages/requests/models.py:683: HTTPError",
+        "title": "Adding/Editing/Removing a review tests are failing on stage and dev",
+        "labels": [],
+        "number": 429,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/429",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Right now there is an issue in TestDeveloperHub where the following apps might fail:\r\ntest_that_checks_that_manifest_url_cannot_be_edited_via_basic_info_for_a_free_app()\r\ntest_that_checks_required_field_validations_on_device_types_for_hosted_apps()\r\n\r\nThe problem is that there are times when no free hosted apps are not found. This is because the test that adds such apps has a clean-up method at the end. There is also a delete app test which removes the first free apps it finds (hosted or packaged). \r\n\r\nFor now we added free hosted apps by running test_hosted_app_submission() without the clean-up. ",
+        "title": "Search for solutions when hosted apps are not found, causing tests to fail",
+        "labels": [],
+        "number": 427,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/427",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Seems like bug 960044  was resolved (https://bugzilla.mozilla.org/show_bug.cgi?id=960044).\r\nWe need to unxfail app submission tests and fix them according to Comment 28 (https://bugzilla.mozilla.org/show_bug.cgi?id=960044#c28)\r\nI cannot get the same submission ID to work on stage and dev. What if we generate another submission ID for stage?",
+        "title": "Unxfail and fix app_submission tests on stage and dev",
+        "labels": [],
+        "number": 425,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/425",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "The test fails with the following stacktrace: \r\n\r\nStacktrace\r\n\r\nself = <tests.desktop.developer_hub.test_api_submit.TestAPI instance at 0x10622fb90>\r\nmozwebqa = <pytest_mozwebqa.pytest_mozwebqa.TestSetup instance at 0x10622fcb0>\r\n\r\n    def test_assert_that_a_app_can_be_added_by_api(self, mozwebqa):\r\n        mock_app = MockApplication()  # generate mock app\r\n        mock_app.name = 'API %s' % mock_app.name\r\n    \r\n        # init API client\r\n        mk_api = MarketplaceAPI.get_client(mozwebqa.base_url,\r\n                                           mozwebqa.credentials)\r\n    \r\n>       mk_api.submit_app(mock_app)  # submit app\r\n\r\ntests/desktop/developer_hub/test_api_submit.py:26: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <mocks.marketplace_api.MarketplaceAPI instance at 0x105f175a8>\r\nmock_app = {'last_name': 'test', 'pitch_app': '', 'device_type': [('firefoxos', True), ('...974483.testmanifest.com/manifest.webapp', 'make_public': True, 'upsell': False}\r\n\r\n    def submit_app(self, mock_app):\r\n    \r\n        #validate app manifest\r\n        self._validate_manifest(mock_app)\r\n    \r\n        #create app\r\n        self._create_app(mock_app)\r\n    \r\n        # update the app with the mock app data\r\n>       self.update_app_data(mock_app)\r\n\r\nmocks/marketplace_api.py:34: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <mocks.marketplace_api.MarketplaceAPI instance at 0x105f175a8>\r\nmock_app = {'last_name': 'test', 'pitch_app': '', 'device_type': [('firefoxos', True), ('...974483.testmanifest.com/manifest.webapp', 'make_public': True, 'upsell': False}\r\n\r\n    def update_app_data(self, mock_app):\r\n        # update the default app data with the custom mock app information\r\n    \r\n        data = {\r\n            'name': mock_app.name,\r\n            'summary': mock_app.summary,\r\n            'categories': [],\r\n            'support_email': mock_app.support_email,\r\n            'device_types': [],\r\n            'payment_type': mock_app.payment_type,\r\n            'premium_type': 'free',\r\n            'privacy_policy': mock_app.privacy_policy,\r\n            'description': mock_app.description,\r\n            'homepage': mock_app.homepage,\r\n            'support_url': mock_app.support_website\r\n        }\r\n    \r\n        # device_types: a list of the device types at least one of: 'desktop', 'android-tablet', 'android-mobile', 'firefoxos'\r\n        data['device_types'] = [device[0] for device in mock_app['device_type'] if device[1]]\r\n    \r\n        Assert.true(data['device_types'],  'insufficient data added device_types')\r\n    \r\n        # categories: a list of the categories, at least two of the category ids provided from the category api\r\n        data['categories'] = [category['id'] for category in self._categories\r\n                              if category['name'] in [mock_category[0] for mock_category in mock_app.categories]]\r\n    \r\n        Assert.greater_equal(len(data['categories']), 2,\r\n                             'Insufficient data added categories == %s\\n Minimum 2 categories required' % data['categories'])\r\n    \r\n>       response = self._client.update(mock_app.id, data)\r\n\r\nmocks/marketplace_api.py:87: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <marketplace.client.Client instance at 0x105f17488>, app_id = 471169\r\ndata = {'categories': [155, 156], 'description': 'more details of marble app 1385974483', 'device_types': ['firefoxos'], 'homepage': 'http://test1385974483.com/', ...}\r\n\r\n    def update(self, app_id, data):\r\n        \"\"\"Update app identified by app_id with data\r\n    \r\n            :params:\r\n                * app_id (int) id in the marketplace received with :method:`create`\r\n                * data (dict) some keys are required:\r\n                    * *name*: the title of the app. Maximum length 127\r\n                      characters.\r\n                    * *summary*: the summary of the app. Maximum length\r\n                      255 characters.\r\n                    * *categories*: a list of the categories, at least\r\n                      two of the category ids provided from the category api\r\n                      (see below).\r\n                    * *support_email*: the email address for support.\r\n                    * *device_types*: a list of the device types at least\r\n                      one of: 'desktop', 'phone', 'tablet'.\r\n                    * *payment_type*: only choice at this time is 'free'.\r\n            :returns: HttResponse:\r\n                * status_code (int) 202 if successful\r\n                * content (dict) or empty if successful\r\n            \"\"\"\r\n        assert ('name' in data\r\n                and data['name']\r\n                and 'summary' in data\r\n                and 'categories' in data\r\n                and data['categories']\r\n                and 'support_email' in data\r\n                and data['support_email']\r\n                and 'device_types' in data\r\n                and data['device_types']\r\n                and 'payment_type' in data\r\n                and data['payment_type']\r\n                and 'privacy_policy' in data\r\n                and data['privacy_policy'])\r\n>       return self.conn.fetch('PUT', self.url('app') % app_id, data)\r\n\r\n.env/lib/python2.7/site-packages/marketplace/client.py:166: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <marketplace.connection.Connection instance at 0x105f175f0>\r\nmethod = 'PUT'\r\nurl = 'https://marketplace-dev.allizom.org:443/api/apps/app/471169/'\r\ndata = {'categories': [155, 156], 'description': 'more details of marble app 1385974483', 'device_types': ['firefoxos'], 'homepage': 'http://test1385974483.com/', ...}\r\nexpected_status_code = None\r\n\r\n    def fetch(self, method, url, data=None, expected_status_code=None):\r\n        \"\"\"Prepare the headers, encode data, call API and provide\r\n            data it returns\r\n            \"\"\"\r\n        kwargs = self.prepare_request(method, url, data)\r\n        response = getattr(requests, method.lower())(url, **kwargs)\r\n        log.debug(str(response.__dict__))\r\n        if response.status_code >= 400:\r\n>           response.raise_for_status()\r\n\r\n.env/lib/python2.7/site-packages/marketplace/connection.py:83: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n\r\nself = <Response [400]>\r\n\r\n    def raise_for_status(self):\r\n        \"\"\"Raises stored :class:`HTTPError`, if one occurred.\"\"\"\r\n    \r\n        http_error_msg = ''\r\n    \r\n        if 400 <= self.status_code < 500:\r\n            http_error_msg = '%s Client Error: %s' % (self.status_code, self.reason)\r\n    \r\n        elif 500 <= self.status_code < 600:\r\n            http_error_msg = '%s Server Error: %s' % (self.status_code, self.reason)\r\n    \r\n        if http_error_msg:\r\n>           raise HTTPError(http_error_msg, response=self)\r\nE           HTTPError: 400 Client Error: BAD REQUEST\r\n\r\n.env/lib/python2.7/site-packages/requests/models.py:683: HTTPError",
+        "title": "test_assert_that_a_app_can_be_added_by_api fails on stage and dev",
+        "labels": [],
+        "number": 400,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/400",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "These both builds are failing for the same reason.\r\nGonna take a look \r\nhttp://qa-selenium.mv.mozilla.com:8080/view/Marketplace/job/marketplace.dev.mobile.saucelabs/lastCompletedBuild/testReport/\r\n",
+        "title": "Investigate why marketplace.dev.mobile.saucelabs & stage are failing on Saucelabs ",
+        "labels": [],
+        "number": 381,
+        "comments": 4,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/381",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "@krupa and I discussed the other day that we have really good marketplace coverage in gaia-ui-tests and some tests are missing in this repo that are in gaia-ui-tests. These tests are good to have hear for better coverage across devices/platforms and also because these tests run faster.\r\n",
+        "title": "Region tests",
+        "labels": [],
+        "number": 338,
+        "comments": 18,
+        "html_url": "https://github.com/mozilla/marketplace-tests/pull/338",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/marketplace-tests/pull/338"
+      },
+      {
+        "body": "This test is marked as xfail (https://github.com/mozilla/marketplace-tests/blob/master/tests/mobile/test_search.py#L39), but the bug is \"Resolved and Verified\". I even test this manually.\r\nMy concern is that the test fails in Saucelabs, and I don't know why there are no suggestions shown. (https://saucelabs.com/tests/cfd24aafd21e4a9e8a5c04e913d51acc#)",
+        "title": "Remove xfail from test_that_verifies_the_search_suggestions_list_under_the_search_field",
+        "labels": [],
+        "number": 257,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/257",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "## Precondition:\r\na) This test assumes that a packaged app already exists with at least one valid version.\r\nb) There is a new version of the packaged app to upload.\r\n\r\n## Steps for the test:\r\n1. Go to the versions page for the packaged app.\r\n2. Click on the \"Select a file\" button under Upload a New Version section.\r\n3. Upload the new version of the packaged app\r\n\r\n## Expected result:\r\na) The new version passes validation and the submission is successful. Upon submission complete, developer navigates to the Reviewer Notes/Release notes page.\r\nb) The app status does not change. If it was \"awaiting review\" it continues to be in that state. Same for public apps.\r\nc) If the app was awaiting review, the previous version of the packaged app is moved to \"Disabled by mozilla\"\r\nd) If the app is public, then the newly added version has \"awaiting review\" status whereas  the previous version remains in \"public\" status.\r\n",
+        "title": "Test for adding a new version to an existing packaged app",
+        "labels": [
+          {
+            "color": "0b02e1",
+            "name": "developer-hub"
+          },
+          {
+            "color": "02e10c",
+            "name": "priority medium"
+          },
+          {
+            "color": "e10c02",
+            "name": "difficulty hard"
+          }
+        ],
+        "number": 129,
+        "comments": 4,
+        "html_url": "https://github.com/mozilla/marketplace-tests/issues/129",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "mcom-tests",
+    "issues": [
+      {
+        "body": "This is high priority -- we need a test for the following (we should be as thorough as we can):\r\n\r\n\"404: http://www.mozilla.org/en-US/firefox/27.0beta/firstrun/\r\n\r\n200k: http://www.mozilla.org/en-US/firefox/27.0b/firstrun/\r\n\r\nIt seems that the firstrun urls are assuming [0-9]+\\.[0-9]+(a|b)*[0-9]*\r\n\r\n/[version].[sub version](optional a or b)[optional number]/firstrun/\r\n\r\nWe should change the logic to allow for b or beta, i.e. b[a-z]* or (b|beta)\"\r\n\r\nhttps://bugzilla.mozilla.org/show_bug.cgi?id=953131#c10",
+        "title": "Need a redirect test for additional /firstrun logic/acceptance of beta/b in Firefox versions",
+        "labels": [
+          {
+            "color": "e102d8",
+            "name": "priority high"
+          },
+          {
+            "color": "0b02e1",
+            "name": "difficulty intermediate"
+          }
+        ],
+        "number": 261,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mcom-tests/issues/261",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Write a new test for the contact us page when it ships",
+        "title": "Write test for new contact us page",
+        "labels": [],
+        "number": 252,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mcom-tests/issues/252",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "",
+        "title": "Adding redirect tests for ta,son, zh-CN locales on /firefox/new",
+        "labels": [],
+        "number": 240,
+        "comments": 6,
+        "html_url": "https://github.com/mozilla/mcom-tests/pull/240",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/mcom-tests/pull/240"
+      },
+      {
+        "body": "Some tests are failing because there are some broken links on the page.",
+        "title": "Added tests for the mozillabased page",
+        "labels": [],
+        "number": 238,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/mcom-tests/pull/238",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/mcom-tests/pull/238"
+      },
+      {
+        "body": "This test puts in a check for all the redirects that are currently broken on production. Merging this will fail on production until bug 905532 is merged.",
+        "title": "Bug 905532 check for MPL and other redirects",
+        "labels": [],
+        "number": 227,
+        "comments": 9,
+        "html_url": "https://github.com/mozilla/mcom-tests/pull/227",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/mcom-tests/pull/227"
+      },
+      {
+        "body": "We need a test for the following:\r\n\r\n1. Given any of the following Firefox versions: past 3 versions, current version, next three versions (.e.g.: Beta, Aurora, Nightly)\r\n2. When a user hits www.mozilla.org or www.mozilla.com, they should go to /[locale]/firefox/fx\r\n3. All other users should get /[locale]/firefox/new/\r\n\r\nThis is from https://bugzilla.mozilla.org/show_bug.cgi?id=892716",
+        "title": "Test that 3 previous, current, and next versions of Firefox get sent to /[locale]/firefox/fx",
+        "labels": [
+          {
+            "color": "e102d8",
+            "name": "priority high"
+          },
+          {
+            "color": "e10c02",
+            "name": "difficulty hard"
+          }
+        ],
+        "number": 212,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/mcom-tests/issues/212",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "test_product_images_links is \"sporadically\" failing -- please look into bolstering it; thanks!\r\n\r\nhttp://qa-selenium.mv.mozilla.com:8080/job/mozilla.com.prod/11812/testReport/junit/tests.test_mozillabased/TestMozillaBasedPagePage/test_product_images_links/history/? for its history on prod, at least.",
+        "title": "Fix/bolster test_product_images_links",
+        "labels": [
+          {
+            "color": "e102d8",
+            "name": "priority high"
+          },
+          {
+            "color": "0b02e1",
+            "name": "difficulty intermediate"
+          }
+        ],
+        "number": 210,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/mcom-tests/issues/210",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Selenium RC is not used with mcom-tests.\r\n\r\nBut still the configuration steps are mentioned, that should be removed.\r\n\r\nAnd this Readme should be similar like https://github.com/mozilla/qmo-tests\r\n",
+        "title": "Remove references and usage of Selenium RC from Readme.md file",
+        "labels": [],
+        "number": 203,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mcom-tests/issues/203",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "The mozilla based page  is now live. We need a test for the page https://www.mozilla.org/en-US/projects/mozilla-based/",
+        "title": "Tests for mozilla-based page",
+        "labels": [],
+        "number": 66,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/mcom-tests/issues/66",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "mdn-tests",
+    "issues": [
+      {
+        "body": "",
+        "title": "Add test: move wiki page",
+        "labels": [],
+        "number": 62,
+        "comments": 12,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/62",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "1. Go to the `docs/new` page. e.g., https://developer.mozilla.org/en-US/docs/new?slug=User:testuser\r\n2. Update the content in `textarea#id_content` (might be tricky because ckeditor throws big stack of elements including an `iframe` on top of it to create a WYSIWYG editor)\r\n3. Click `button#btn-save`\r\n4. Assert the updated content on the article (e.g., https://developer.mozilla.org/en-US/docs/User:testuser)",
+        "title": "Add test: add wiki page",
+        "labels": [],
+        "number": 61,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/61",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "(Must be signed-in)\r\n\r\n1. Go to the $edit page for an article (e.g., https://developer.mozilla.org/en-US/docs/User:testuser$edit)\r\n2. Click the \"Edit Page Title and Properties\" link\r\n3. Change the `input#id_title` value\r\n2. Update the content in `textarea#id_content` (might be tricky because ckeditor throws big stack of elements including an `iframe` on top of it to create a WYSIWYG editor)\r\n3. Click `button#btn-save`\r\n4. Assert the updated title and content on the article (e.g., https://developer.mozilla.org/en-US/docs/User:testuser)",
+        "title": "Add test: edit wiki page",
+        "labels": [],
+        "number": 60,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/60",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "View a basic wiki page and assert elements exist. E.g.,\r\n\r\nhttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array\r\n\r\n```\r\na#settings-menu\r\ndiv.document-head h1\r\ndiv.tag-attach-list\r\ndiv.contributor-sub\r\n```",
+        "title": "Add test: view wiki page",
+        "labels": [],
+        "number": 59,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/59",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "To see the impact of the pending MDN redesign, we need to:\r\n\r\n1. create a new test user account, and put it in https://github.com/mozilla/webqa-credentials/blob/master/mdn.yaml\r\n2. Ask @darkwing to flip the Waffle switch so that account can test, via automation, the redesign\r\n3. Create a branch in GitHub to help us migrate our tests to the new format, without disrupting current coverage.",
+        "title": "Get the MDN redesign test-branch and user going",
+        "labels": [],
+        "number": 52,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/52",
+        "assignee": "Bob Silverberg",
+        "pull_request": ""
+      },
+      {
+        "body": "Issue https://github.com/mozilla/mdn-tests/issues/29",
+        "title": "Test for account creation",
+        "labels": [],
+        "number": 38,
+        "comments": 23,
+        "html_url": "https://github.com/mozilla/mdn-tests/pull/38",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/mdn-tests/pull/38"
+      },
+      {
+        "body": "Banning is probably not a feature that's used a lot, but when it needs to be used, it would rather be not broken, because it's a pretty important action.",
+        "title": "Add test for banning users",
+        "labels": [],
+        "number": 30,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/30",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Make sure it's always possible to create an MDN account",
+        "title": "Add test for account creation",
+        "labels": [],
+        "number": 29,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/mdn-tests/issues/29",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "",
+        "title": "adding test for api button on profile page",
+        "labels": [],
+        "number": 26,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/mdn-tests/pull/26",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/mdn-tests/pull/26"
+      }
+    ]
+  },
+  {
+    "repo": "mozillians-tests",
+    "issues": [
+      {
+        "body": "The team is working on a new feature called curated groups (<a href=\"https://bugzilla.mozilla.org/show_bug.cgi?id=936569\">bug 936569</a>) which changes the way that Mozillians interact with the groups feature as well as how groups are created.\r\n\r\nUntil the new feature becomes stable on stage <strong>DO NOT</strong> work on refactoring the failing tests. Not only are the features still in flux as we work on the UX but it is likely the current set of groups tests will no longer be valid given the new site workflows.",
+        "title": "Refactor group tests",
+        "labels": [],
+        "number": 125,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mozillians-tests/issues/125",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "The last several Mozillians released have met with Elastic Search (ES) failing to fully re-index itself. Sancus (webdev) has postulated that we can write a test that verifies ES is returning the proper results/has successfully indexed.\r\n\r\n__Note__ this will take some experimentation. It is possible that this is a poor route to test for this failure case. That said this should be a fun exercise given that you'll be using the Mozillians API. Ping #commtools with questions on it's usage.\r\n\r\nUsing the Mozillians API, write a test that compares the number of indexed people to the number of vouched/complete profile people in the database. These two number should be concisitent",
+        "title": "Verify ES has indexed properly",
+        "labels": [
+          {
+            "color": "02e10c",
+            "name": "priority medium"
+          },
+          {
+            "color": "e10c02",
+            "name": "difficulty hard"
+          }
+        ],
+        "number": 108,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mozillians-tests/issues/108",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "moztrap-tests",
+    "issues": [
+      {
+        "body": "create a tag during test case creation",
+        "title": "Create a tag during test case creation",
+        "labels": [],
+        "number": 137,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/moztrap-tests/issues/137",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "there is a new status of blocked (with only a comment, like for invalid, but looks red like a failure)\r\n\r\nhttps://moztrap.readthedocs.org/en/1.4.7/userguide/ui/runtests.html#result-statuses",
+        "title": "automate status of ``blocked``",
+        "labels": [],
+        "number": 120,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/moztrap-tests/issues/120",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "there is a new status of skipped.  we need some automation for it.\r\nhttps://moztrap.readthedocs.org/en/1.4.7/userguide/ui/runtests.html#result-statuses",
+        "title": "automate status of ``skipped``",
+        "labels": [],
+        "number": 119,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/moztrap-tests/issues/119",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "We should ensure the sorting is correct when a test run has multiple possible environments and users.\r\n\r\n1. submit results with multiple users on different cases for same environment.  Sorting should honor results from both (i.e.: passes from one user grouped with passes from the other user,etc).\r\n2. submit results from the same or different users on different environments for the run.  Sorting should only group passes, fails, etc from existing environment, and ignore results for other environments",
+        "title": "need tests: sort by result in runtests (while executing a test run)",
+        "labels": [],
+        "number": 117,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/moztrap-tests/issues/117",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "mozwebqa-test-templates",
+    "issues": [
+      {
+        "body": "",
+        "title": "Removes arbitrary arguments from page functions and elsewhere",
+        "labels": [],
+        "number": 23,
+        "comments": 5,
+        "html_url": "https://github.com/mozilla/mozwebqa-test-templates/pull/23",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/mozwebqa-test-templates/pull/23"
+      },
+      {
+        "body": "I was looking through [page.py](https://github.com/mozilla/mozwebqa-test-templates/blob/master/pages/page.py) and I noticed most functions have accept arbitrary number of arguments, like [is_element_present](https://github.com/mozilla/mozwebqa-test-templates/blob/master/pages/page.py#L50), but a few others don't, like [link_destination](https://github.com/mozilla/mozwebqa-test-templates/blob/master/pages/page.py#L130).\r\n\r\nI was wondering what the design decision was around this. I made a set of templates based off this one that removes the arbitrary arguments and it doesn't require me to pass locators with the asterisk in my test files. ",
+        "title": "Multiple arguments in page functions",
+        "labels": [],
+        "number": 22,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/mozwebqa-test-templates/issues/22",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "I think it would be handy to create a Travis CI project for this repository.",
+        "title": "Create a Travis CI project",
+        "labels": [],
+        "number": 18,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/mozwebqa-test-templates/issues/18",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "qmo-tests",
+    "issues": [
+      {
+        "body": "",
+        "title": "Able to log in as an Admin",
+        "labels": [],
+        "number": 73,
+        "comments": 5,
+        "html_url": "https://github.com/mozilla/qmo-tests/issues/73",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "This is a proposed alternate approach for checking links. It uses a fixture to collect the links and runs the tests with the links as parameters. This should improve reporting and the time it takes these tests to run, as they will use the processes invoked by pytest-xdist.\r\n\r\nLooking for feedback, especially from @bobsilverberg :smile: ",
+        "title": "Replace the link crawler with a data provider",
+        "labels": [],
+        "number": 57,
+        "comments": 9,
+        "html_url": "https://github.com/mozilla/qmo-tests/pull/57",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/qmo-tests/pull/57"
+      }
+    ]
+  },
+  {
+    "repo": "remo-tests",
+    "issues": [
+      {
+        "body": "Earlier this week some QA automation broke because the Foundation 4 upgrade included some different class names. The automation broke here:\r\n\r\nhttps://github.com/mozilla/remo-tests/blob/master/pages/base.py#L48\r\n\r\nIn bug 941029 we're finding each of the elements described by one of those complex selectors and giving it an additional class name that isn't tied to functionality. We have a PR for that in review now.\r\n\r\nOnce that PR lands we should update the remo-tests repo with the new selector names.\r\n",
+        "title": "Update remo tests to use non-functional selectors",
+        "labels": [],
+        "number": 109,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/remo-tests/issues/109",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Verify the CSV Export option from Advanced Settings",
+        "title": "CSV Export test for the People page",
+        "labels": [],
+        "number": 58,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/remo-tests/issues/58",
+        "assignee": "AndreiH",
+        "pull_request": ""
+      },
+      {
+        "body": "Create a monthly report for a Rep",
+        "title": "Create a Report",
+        "labels": [],
+        "number": 57,
+        "comments": 10,
+        "html_url": "https://github.com/mozilla/remo-tests/issues/57",
+        "assignee": "AndreiH",
+        "pull_request": ""
+      },
+      {
+        "body": "Edit the fields of an existing event",
+        "title": "Edit an existing event",
+        "labels": [],
+        "number": 55,
+        "comments": 7,
+        "html_url": "https://github.com/mozilla/remo-tests/issues/55",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Create a new event. This will be a long test due to the large number of required fields.",
+        "title": "Create new event",
+        "labels": [],
+        "number": 54,
+        "comments": 5,
+        "html_url": "https://github.com/mozilla/remo-tests/issues/54",
+        "assignee": "Rebecca Billings",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "snippets-tests",
+    "issues": [
+      {
+        "body": "We recently ran into an issue where:\r\n\r\n1. Service sends users in Spain 3 snippets, all of which are geolocated.\r\n2. When the snippet JS is executed on the client, and the client finds its country data is out of date, it fails in showing the snippet.\r\n3. The client doesn't fetch a new country, because the code for fetching this is in the block that only runs if they successfully saw a snippet.\r\n\r\nIn order to test this we need a way to better control the state of the database that we run these tests against so we can ensure that there is a snippet URL that will only send geolocated snippets.\r\n\r\n@stephendonner tells me the LiveServer magic in Django 1.4 lets us do this. Lucky for us, the new Snippets Service is on Django 1.4! I'm happy to provide support for getting this working. Once we have this, there are a lot more meaningful tests we can run against the service.",
+        "title": "Regression test for sending snippets that are all geolocated.",
+        "labels": [],
+        "number": 16,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/snippets-tests/issues/16",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "Socorro-Tests",
+    "issues": [
+      {
+        "body": "<code>test_the_product_releases_return_results</code>\r\nand <code>test_that_top_crashers_reports_links_work</code> are currently failing on stage and prod because page with crash data not found.\r\nhttp://qa-selenium.mv.mozilla.com:8080/view/Socorro/job/socorro.prod/553/HTML_Report/?\r\n\r\nScreencast:\r\nhttp://screencast.com/t/sCib0ecpsKK",
+        "title": "B2G Crash Data not found for B2G 28.0a1",
+        "labels": [],
+        "number": 241,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/Socorro-Tests/issues/241",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "http://qa-selenium.mv.mozilla.com:8080/view/Socorro/job/socorro.prod/lastCompletedBuild/testReport/tests.test_layout/TestLayout/test_that_product_versions_are_ordered_correctly/",
+        "title": "Prod and Stage are failing on CI",
+        "labels": [],
+        "number": 235,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/Socorro-Tests/issues/235",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "Fennec is being aged out of Socorro and by Kairo's admission isn't used, we can safely remove all Fennec tests - [bug 914933](https://bugzilla.mozilla.org/show_bug.cgi?id=914933#c6)",
+        "title": "Remove all Fennec tests",
+        "labels": [
+          {
+            "color": "02e10c",
+            "name": "difficulty beginner"
+          },
+          {
+            "color": "e102d8",
+            "name": "priority high"
+          }
+        ],
+        "number": 223,
+        "comments": 3,
+        "html_url": "https://github.com/mozilla/Socorro-Tests/issues/223",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "To build out this solution we'll need to work closely with lars and rhelmer to design what the tests actually touch and verify. The tests will be hitting areas that lars has written and maintains in addition we may chose to create synthetic crashes for the tests to use. rhelmer has insight on synthetic crash generation as well as models for crash submission.\r\n\r\n### Test the submission path for crashes ###\r\n- submit crashes that stress different parts of the system for example large crashes\r\n- submit problematic crashes\r\n- hbase & postgres",
+        "title": "Test crash submission and processing",
+        "labels": [
+          {
+            "color": "e10c02",
+            "name": "difficulty advanced"
+          },
+          {
+            "color": "0b02e1",
+            "name": "priority medium"
+          }
+        ],
+        "number": 198,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/Socorro-Tests/issues/198",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "sumo-tests",
+    "issues": [
+      {
+        "body": "Since Persona login was implemented on staging site <code>test_new_user_registration</code> was removed in pull https://github.com/mozilla/sumo-tests/pull/217, so we need to create a new test that should replace the old one.",
+        "title": "Test for registering new user",
+        "labels": [],
+        "number": 227,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/sumo-tests/issues/227",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "it looks like those locators are not in use:\r\nhttps://github.com/mozilla/sumo-tests/blob/master/pages/desktop/base.py#L14\r\n\r\nthis method too:\r\nhttps://github.com/mozilla/sumo-tests/blob/master/pages/desktop/base.py#L24\r\n\r\nand this locator in `HeadRegion` class:\r\nhttps://github.com/mozilla/sumo-tests/blob/master/pages/desktop/base.py#L65\r\n\r\nthere is also pep8 violation:\r\nhttps://github.com/mozilla/sumo-tests/blob/master/pages/desktop/base.py#L7\r\n\r\nselenium imports should go first and `Page` should go last",
+        "title": "dead code in `base.py` module",
+        "labels": [],
+        "number": 211,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/sumo-tests/issues/211",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "looks like it contains code for selenium rc, not webdriver:\r\nhttps://github.com/mozilla/sumo-tests/blob/master/pages/desktop/forums_page.py\r\n\r\nperhaps, it can be removed from repo if it's not used in any tests?\r\nit was partially (or fully) migrated to webdriver in `questions_page.py` module.",
+        "title": "module forums_page.py is obsolete",
+        "labels": [],
+        "number": 210,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/sumo-tests/issues/210",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "three commits made on June 6th (today).\r\n\r\nThere are some unclear points, and they are:\r\n1. changes of webdriver commands (such as open, type, and wait_for_page_to_load) since they seem not to be available for self.selenium...\r\n2. addition of a function in login_page.py. This is because of ensuring that the current log-in user has written the reply.\r\n3. use of xpath for some locators. Due to my limited knowledge about css-selectors..;<\r\n\r\nPlease feel free to give me suggestions for big changes!   \r\n",
+        "title": "B test197",
+        "labels": [],
+        "number": 203,
+        "comments": 40,
+        "html_url": "https://github.com/mozilla/sumo-tests/pull/203",
+        "assignee": "",
+        "pull_request": "https://github.com/mozilla/sumo-tests/pull/203"
+      },
+      {
+        "body": "We need a test that shows a user can start from the start page and ask a question in the forum.\r\n\r\n1. Start on https://support.mozilla.org/en-US/home\r\n2. Click on \"Ask a Question\". Land on: https://support.mozilla.org/en-US/questions/new\r\n3. Click on \"Firefox for desktop\": https://support.mozilla.org/en-US/questions/new/desktop\r\n4. Click on \"Privacy and security settings\": \r\n5. Click on one of the articles shown as the result.\r\n6. Close the article page, and go back to the flow\r\n7. Click into the search field at the bottom. Type in \"my Firefox crashed on Facebook\" and click on \"ask this\"\r\n8. Click on one of the articles shown as the result.\r\n9. Close the article page, and go back to the flow.\r\n10. Scroll to the boom and click \"None of these solve my problem\"\r\n11. use the form to register\r\n12. Type something into the big field.\r\n13. Submit form\r\n14. Verify email address by clicking on the link\r\n15. Follow the link on the page to verify that message has been posted to the forum. ",
+        "title": "Need a test for people asking questions",
+        "labels": [],
+        "number": 198,
+        "comments": 2,
+        "html_url": "https://github.com/mozilla/sumo-tests/issues/198",
+        "assignee": "",
+        "pull_request": ""
+      },
+      {
+        "body": "We need a test that shows a contributor can start on the home page and move all the way to answering a question in the forum.\r\n\r\n1. Start on https://support.mozilla.org/en-US/home\r\n2. Log in\r\n3. Use the contributor bar to go to the forums. Land on: https://support.mozilla.org/questions The questions page should list 20 posts.\r\n4. Click on a question. (Url is in the forum of /questions/[some number])\r\n5. Scroll to the bottom and click into the text field. \r\n6. Type reply\r\n7. Click on \"Post reply\". The page should reload with the reply posted.",
+        "title": "Contributor flow to support forum post",
+        "labels": [],
+        "number": 197,
+        "comments": 1,
+        "html_url": "https://github.com/mozilla/sumo-tests/issues/197",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  },
+  {
+    "repo": "wiki-tests",
+    "issues": [
+      {
+        "body": "Hi! stephend was on #mediawiki earlier & expressed interest in other Selenium tests for MediaWiki. I wanted to point you to https://github.com/atdt/karaga, which I'm not actively developing but which you should feel free to cannibalize.\r\n\r\nI've found it especially useful to check that all ResourceLoader modules have loaded successfully. You can do that by mapping the output of `mw.loader.getModuleNames()` to `mw.loader.getModuleState()`.\r\n\r\nYou can assert something like:\r\n\r\n```javascript\r\n$.map(mw.loader.getModuleNames(), mw.loader.getState).indexOf('error') === -1\r\n```",
+        "title": "Test that JS modules loaded successfully",
+        "labels": [],
+        "number": 44,
+        "comments": 0,
+        "html_url": "https://github.com/mozilla/wiki-tests/issues/44",
+        "assignee": "",
+        "pull_request": ""
+      }
+    ]
+  }
+]
