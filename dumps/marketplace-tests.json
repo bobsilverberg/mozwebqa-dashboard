@@ -20,82 +20,8 @@
     {
       "results": {
         "xfail": {
-          "reason": "Bug 960044 - [dev] IARC submissionID/secCode form fails + pingback never comes on -dev", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/960044", 
-              "raw": "Bug 960044", 
-              "to_use": "Bug 960044"
-            }
-          ]
-        }
-      }, 
-      "file": "test_developer_hub.py", 
-      "dir": "workspace/marketplace-tests/tests/desktop/developer_hub", 
-      "method": "test_packaged_app_submission"
-    }, 
-    {
-      "results": {
-        "xfail": {
-          "reason": "Bug 960044 - [dev] IARC submissionID/secCode form fails + pingback never comes on -dev", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/960044", 
-              "raw": "Bug 960044", 
-              "to_use": "Bug 960044"
-            }
-          ]
-        }
-      }, 
-      "file": "test_developer_hub.py", 
-      "dir": "workspace/marketplace-tests/tests/desktop/developer_hub", 
-      "method": "test_that_checks_that_manifest_url_cannot_be_edited_via_basic_info_for_a_free_app"
-    }, 
-    {
-      "results": {
-        "xfail": {
-          "reason": "Bug 960044 - [dev] IARC submissionID/secCode form fails + pingback never comes on -dev", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/960044", 
-              "raw": "Bug 960044", 
-              "to_use": "Bug 960044"
-            }
-          ]
-        }
-      }, 
-      "file": "test_developer_hub.py", 
-      "dir": "workspace/marketplace-tests/tests/desktop/developer_hub", 
-      "method": "test_that_checks_required_field_validations_on_device_types_for_hosted_apps"
-    }, 
-    {
-      "results": {
-        "xfail": {
-          "reason": "Bug 960044 - [dev] IARC submissionID/secCode form fails + pingback never comes on -dev", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/960044", 
-              "raw": "Bug 960044", 
-              "to_use": "Bug 960044"
-            }
-          ]
-        }
-      }, 
-      "file": "test_developer_hub.py", 
-      "dir": "workspace/marketplace-tests/tests/desktop/developer_hub", 
-      "method": "test_hosted_app_submission"
-    }, 
-    {
-      "results": {
-        "xfail": {
-          "reason": "Bug 960044 - [dev] IARC submissionID/secCode form fails + pingback never comes on -dev", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/960044", 
-              "raw": "Bug 960044", 
-              "to_use": "Bug 960044"
-            }
-          ]
+          "reason": "-dev.allizom\" in config.getvalue(\"base_url", 
+          "links": []
         }
       }, 
       "file": "test_developer_hub.py", 
@@ -166,47 +92,30 @@
     {
       "results": {
         "xfail": {
-          "reason": "Bug 944343 - Marketplace Stage Out-of-date app and failure trying to update", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/944343", 
-              "raw": "Bug 944343", 
-              "to_use": "Bug 944343"
-            }
-          ]
+          "reason": "config.getvalue('base_url", 
+          "links": []
         }
       }, 
-      "file": "test_reviews.py", 
+      "file": "test_details_page.py", 
       "dir": "workspace/marketplace-tests/tests/mobile", 
-      "method": "test_that_after_writing_a_review_clicking_back_goes_to_app_page"
+      "method": "test_details_page_for_an_app"
     }, 
     {
       "results": {
-        "xfail": {
-          "reason": "Search suggestions has not been implemented yet", 
-          "links": []
+        "skipif": {
+          "reason": "True', 'Test skipped because of Bug 847625 - Port search suggestions to Fireplace", 
+          "links": [
+            {
+              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/847625", 
+              "raw": "Bug 847625", 
+              "to_use": "Bug 847625"
+            }
+          ]
         }
       }, 
       "file": "test_search.py", 
       "dir": "workspace/marketplace-tests/tests/mobile", 
       "method": "test_that_verifies_the_search_suggestions_list_under_the_search_field"
-    }, 
-    {
-      "results": {
-        "xfail": {
-          "reason": "Issue 381: https://github.com/mozilla/marketplace-tests/issues/381", 
-          "links": [
-            {
-              "url": "https://api.github.com/repos/mozilla/marketplace-tests/issues/381", 
-              "raw": "https://github.com/mozilla/marketplace-tests/issues/381", 
-              "to_use": "mozilla/marketplace-tests-#381"
-            }
-          ]
-        }
-      }, 
-      "file": "test_users_account.py", 
-      "dir": "workspace/marketplace-tests/tests/mobile", 
-      "method": "test_user_can_go_back_from_settings_page"
     }
   ]
 }

@@ -3,17 +3,6 @@
     {
       "results": {
         "xfail": {
-          "reason": "config.getvalue('platform", 
-          "links": []
-        }
-      }, 
-      "file": "test_details_page.py", 
-      "dir": "workspace/Addon-Tests/tests/desktop", 
-      "method": "test_the_development_channel_section"
-    }, 
-    {
-      "results": {
-        "xfail": {
           "reason": "config.getvalue('base_url", 
           "links": []
         }
@@ -32,23 +21,6 @@
       "file": "test_statistics.py", 
       "dir": "workspace/Addon-Tests/tests/desktop", 
       "method": "test_that_checks_content_in_json_endpoints_from_statistics_urls"
-    }, 
-    {
-      "results": {
-        "xfail": {
-          "reason": "Bug 959202 - [dev] 'Hide email address from other users' option is not working", 
-          "links": [
-            {
-              "url": "https://api-dev.bugzilla.mozilla.org/latest/bug/959202", 
-              "raw": "Bug 959202", 
-              "to_use": "Bug 959202"
-            }
-          ]
-        }
-      }, 
-      "file": "test_users_account.py", 
-      "dir": "workspace/Addon-Tests/tests/desktop", 
-      "method": "test_hide_email_checkbox_works"
     }, 
     {
       "results": {
