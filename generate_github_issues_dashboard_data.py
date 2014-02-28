@@ -20,15 +20,15 @@ class GithubIssuesAggregator(object):
         if rate_limit.rate.limit < 5000:
             raise ValueError('The Github rate limit is less than 5000. The api token is likely incorrect.')
 
-    def process_issues(self):
+    def add_labels(self):
         all_issues = []
         with open('%s.txt' % self.repos_file) as f:
             self.repos = [a.split('/')[-1] for a in f.read().splitlines()]
         org = self.gh_api.get_organization('Mozilla')
         for repo in self.repos:
-            print 'Retrieving issues for %s...' % repo
+            print 'Retrieving labels for %s...' % repo
             issues = []
-            for issue in org.get_repo(repo).get_issues(state='Open'):
+            for label in org.get_repo(repo).get_issues(state='Open'):
                 issue_dict = {'assignee': issue.assignee and issue.assignee.name or '',
                               'pull_request': issue.pull_request and issue.pull_request.html_url or '',
                               'updated_at': str(issue.updated_at)
