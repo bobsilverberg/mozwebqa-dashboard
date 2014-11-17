@@ -1,7 +1,6 @@
 https://github.com/mozilla/Addon-Tests
 https://github.com/mozilla/Affiliates-Tests
 https://github.com/mozilla/bouncer-tests
-https://github.com/mozilla/marketing-project-template
 https://github.com/mozilla/marketplace-tests
 https://github.com/mozilla/mcom-tests
 https://github.com/mozilla/mdn-tests
@@ -15,3 +14,4 @@ https://github.com/mozilla/snippets-tests
 https://github.com/mozilla/Socorro-Tests
 https://github.com/mozilla/sumo-tests
 https://github.com/mozilla/wiki-tests
+https://github.com/mozilla/oneanddone-tests
